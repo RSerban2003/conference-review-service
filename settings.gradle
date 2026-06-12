@@ -1,4 +1,3 @@
-rootProject.name = 'easyconf-team08b'
+rootProject.name = 'easyconf-reviews'
 
-//include 'authentication-microservice'
 include 'reviews-microservice'

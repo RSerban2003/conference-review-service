@@ -1,6 +1,6 @@
 package nl.tudelft.sem.v20232024.team08b.unit.services;
 
-import javassist.NotFoundException;
+import nl.tudelft.sem.v20232024.team08b.exceptions.NotFoundException;
 import nl.tudelft.sem.v20232024.team08b.application.DiscussionService;
 import nl.tudelft.sem.v20232024.team08b.application.ReviewsService;
 import nl.tudelft.sem.v20232024.team08b.application.verification.PapersVerification;
@@ -12,7 +12,6 @@ import nl.tudelft.sem.v20232024.team08b.dtos.review.TrackPhase;
 import nl.tudelft.sem.v20232024.team08b.dtos.review.UserRole;
 import nl.tudelft.sem.v20232024.team08b.dtos.submissions.Submission;
 import nl.tudelft.sem.v20232024.team08b.repos.ReviewRepository;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -77,7 +76,7 @@ public class ReviewsServiceTests {
     @Test
     void submitReview_NoSuchPaper() {
         when(papersVerification.verifyPaper(paperID)).thenReturn(false);
-        Assert.assertThrows(NotFoundException.class, () ->
+        Assertions.assertThrows(NotFoundException.class, () ->
                 reviewsService.submitReview(reviewDTO, requesterID, paperID));
     }
 
@@ -150,7 +149,7 @@ public class ReviewsServiceTests {
         when(usersVerification.verifyRoleFromPaper(requesterID, paperID, UserRole.REVIEWER))
                 .thenReturn(false);
 
-        Assert.assertThrows(IllegalAccessException.class, () ->
+        Assertions.assertThrows(IllegalAccessException.class, () ->
                 reviewsService.submitReview(reviewDTO, requesterID, paperID));
     }
 
@@ -169,7 +168,7 @@ public class ReviewsServiceTests {
         // Assume that the user is not a reviewer - i.e., the third IF does not work
         when(usersVerification.isReviewerForPaper(reviewerID, paperID)).thenReturn(false);
 
-        Assert.assertThrows(IllegalAccessException.class, () ->
+        Assertions.assertThrows(IllegalAccessException.class, () ->
                 reviewsService.submitReview(reviewDTO, requesterID, paperID));
     }
 
@@ -188,12 +187,12 @@ public class ReviewsServiceTests {
         // Assume that the user a reviewer
         when(usersVerification.isReviewerForPaper(requesterID, paperID)).thenReturn(true);
 
-        // Assume the current phase is not the submitting phase
+        // Assume the current phase is not the reviewing phase
         doThrow(new IllegalAccessException("")).when(tracksVerification).verifyTrackPhaseThePaperIsIn(
                 paperID,
-                List.of(TrackPhase.SUBMITTING)
+                List.of(TrackPhase.REVIEWING)
         );
-        Assert.assertThrows(IllegalAccessException.class, () ->
+        Assertions.assertThrows(IllegalAccessException.class, () ->
                 reviewsService.submitReview(reviewDTO, requesterID, paperID));
     }
 
@@ -223,7 +222,7 @@ public class ReviewsServiceTests {
         // Assume paper does not exist
         when(papersVerification.verifyPaper(paperID)).thenReturn(false);
 
-        Assert.assertThrows(NotFoundException.class, () ->
+        Assertions.assertThrows(NotFoundException.class, () ->
                 reviewsService.verifyIfUserCanAccessReview(requesterID, reviewerID, paperID));
     }
 
@@ -245,7 +244,7 @@ public class ReviewsServiceTests {
         when(reviewRepository.findById(new ReviewID(paperID, reviewerID))).thenReturn(Optional.of(new Review()));
 
 
-        Assert.assertThrows(IllegalAccessException.class, () ->
+        Assertions.assertThrows(IllegalAccessException.class, () ->
                 reviewsService.verifyIfUserCanAccessReview(requesterID, reviewerID, paperID));
     }
 
@@ -266,7 +265,7 @@ public class ReviewsServiceTests {
         when(reviewRepository.findById(new ReviewID(paperID, reviewerID))).thenReturn(Optional.empty());
 
 
-        Assert.assertThrows(NotFoundException.class, () ->
+        Assertions.assertThrows(NotFoundException.class, () ->
                 reviewsService.verifyIfUserCanAccessReview(requesterID, reviewerID, paperID));
     }
 

@@ -1,6 +1,6 @@
 package nl.tudelft.sem.v20232024.team08b.unit.services;
 
-import javassist.NotFoundException;
+import nl.tudelft.sem.v20232024.team08b.exceptions.NotFoundException;
 import nl.tudelft.sem.v20232024.team08b.application.BidsService;
 import nl.tudelft.sem.v20232024.team08b.application.verification.BidsVerification;
 import nl.tudelft.sem.v20232024.team08b.domain.Bid;
@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class BidsServiceTests {

@@ -1,6 +1,6 @@
 package nl.tudelft.sem.v20232024.team08b.application;
 
-import javassist.NotFoundException;
+import nl.tudelft.sem.v20232024.team08b.exceptions.NotFoundException;
 import nl.tudelft.sem.v20232024.team08b.application.verification.BidsVerification;
 import nl.tudelft.sem.v20232024.team08b.domain.Bid;
 import nl.tudelft.sem.v20232024.team08b.domain.BidID;

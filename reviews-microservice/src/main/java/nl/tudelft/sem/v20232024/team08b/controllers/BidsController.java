@@ -1,6 +1,6 @@
 package nl.tudelft.sem.v20232024.team08b.controllers;
 
-import javassist.NotFoundException;
+import nl.tudelft.sem.v20232024.team08b.exceptions.NotFoundException;
 import nl.tudelft.sem.v20232024.team08b.api.BidsAPI;
 import nl.tudelft.sem.v20232024.team08b.application.BidsService;
 import nl.tudelft.sem.v20232024.team08b.dtos.review.Bid;

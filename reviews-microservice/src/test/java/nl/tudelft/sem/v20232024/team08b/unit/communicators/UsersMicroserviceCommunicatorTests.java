@@ -1,7 +1,7 @@
 package nl.tudelft.sem.v20232024.team08b.unit.communicators;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javassist.NotFoundException;
+import nl.tudelft.sem.v20232024.team08b.exceptions.NotFoundException;
 import nl.tudelft.sem.v20232024.team08b.communicators.UsersMicroserviceCommunicator;
 import nl.tudelft.sem.v20232024.team08b.dtos.users.RolesOfUser;
 import nl.tudelft.sem.v20232024.team08b.dtos.users.Track;

@@ -1,6 +1,6 @@
 package nl.tudelft.sem.v20232024.team08b.unit.verification;
 
-import javassist.NotFoundException;
+import nl.tudelft.sem.v20232024.team08b.exceptions.NotFoundException;
 import nl.tudelft.sem.v20232024.team08b.application.verification.UsersVerification;
 import nl.tudelft.sem.v20232024.team08b.communicators.SubmissionsMicroserviceCommunicator;
 import nl.tudelft.sem.v20232024.team08b.communicators.UsersMicroserviceCommunicator;

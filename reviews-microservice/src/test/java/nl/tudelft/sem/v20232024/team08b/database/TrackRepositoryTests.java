@@ -3,11 +3,9 @@ package nl.tudelft.sem.v20232024.team08b.database;
 import nl.tudelft.sem.v20232024.team08b.domain.Track;
 import nl.tudelft.sem.v20232024.team08b.domain.TrackID;
 import nl.tudelft.sem.v20232024.team08b.repos.TrackRepository;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -16,7 +14,6 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
-@RunWith(SpringRunner.class)
 public class TrackRepositoryTests {
 
     @Autowired

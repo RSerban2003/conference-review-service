@@ -1,6 +1,6 @@
 package nl.tudelft.sem.v20232024.team08b.application.phase;
 
-import javassist.NotFoundException;
+import nl.tudelft.sem.v20232024.team08b.exceptions.NotFoundException;
 import nl.tudelft.sem.v20232024.team08b.communicators.CommunicationWithUsersMicroservice;
 import nl.tudelft.sem.v20232024.team08b.domain.Paper;
 import nl.tudelft.sem.v20232024.team08b.domain.Track;

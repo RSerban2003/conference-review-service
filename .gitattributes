@@ -1,3 +1,6 @@
-*.pdf filter=lfs diff=lfs merge=lfs -text
-*.docx filter=lfs diff=lfs merge=lfs -text
-*.zip filter=lfs diff=lfs merge=lfs -text
+* text=auto
+*.bat text eol=crlf
+gradlew text eol=lf
+*.jar binary
+*.pdf binary
+*.png binary

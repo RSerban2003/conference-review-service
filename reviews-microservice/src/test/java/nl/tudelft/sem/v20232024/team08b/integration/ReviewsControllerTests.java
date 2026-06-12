@@ -1,7 +1,7 @@
 package nl.tudelft.sem.v20232024.team08b.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javassist.NotFoundException;
+import nl.tudelft.sem.v20232024.team08b.exceptions.NotFoundException;
 import nl.tudelft.sem.v20232024.team08b.application.DiscussionService;
 import nl.tudelft.sem.v20232024.team08b.application.PapersService;
 import nl.tudelft.sem.v20232024.team08b.application.ReviewsService;

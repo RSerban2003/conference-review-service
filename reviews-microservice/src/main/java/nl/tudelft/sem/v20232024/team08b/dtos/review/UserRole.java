@@ -13,8 +13,8 @@ public enum UserRole {
      * @return a parsed enum
      */
     public static UserRole parse(String userString) {
-        // TODO make sure the names of the roles correspond to the ones the Users team is using
-        //  it seems they are a bit inconsistent about it
+        // The Users microservice is not consistent in how it spells role names,
+        // so both known spellings of each role are accepted here.
         switch (userString) {
             case "PC Chair", "PCchair":
             case "General Chair", "GeneralChair":

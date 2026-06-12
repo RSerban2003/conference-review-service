@@ -1,6 +1,6 @@
 package nl.tudelft.sem.v20232024.team08b.application;
 
-import javassist.NotFoundException;
+import nl.tudelft.sem.v20232024.team08b.exceptions.NotFoundException;
 import nl.tudelft.sem.v20232024.team08b.application.verification.PapersVerification;
 import nl.tudelft.sem.v20232024.team08b.application.verification.TracksVerification;
 import nl.tudelft.sem.v20232024.team08b.application.verification.UsersVerification;
@@ -66,9 +66,9 @@ public class ReviewsService {
             throw new IllegalAccessException("The user is not a reviewer for this paper.");
         }
 
-        // Verify that the current phase is the submitting phase
+        // Verify that the track is in the reviewing phase
         tracksVerification.verifyTrackPhaseThePaperIsIn(paperID,
-                List.of(TrackPhase.SUBMITTING)
+                List.of(TrackPhase.REVIEWING)
         );
     }
 

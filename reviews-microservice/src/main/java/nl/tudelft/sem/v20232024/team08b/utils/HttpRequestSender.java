@@ -1,6 +1,6 @@
 package nl.tudelft.sem.v20232024.team08b.utils;
 
-import javassist.NotFoundException;
+import nl.tudelft.sem.v20232024.team08b.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 

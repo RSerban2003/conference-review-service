@@ -1,0 +1,193 @@
+# End-to-end demo of the Reviews microservice.
+#
+# Prerequisite: start the service with the demo profile, which seeds one
+# track (conference 1, track 1) with two papers and stubs the external
+# Users/Submissions microservices:
+#
+#   ./gradlew bootRun --args="--spring.profiles.active=demo"     (Unix)
+#   .\gradlew.bat bootRun --args="--spring.profiles.active=demo" (Windows)
+#
+# Demo cast (seeded by the demo profile):
+#   user 1 = PC chair (also a PC member)   users 2, 3, 4 = reviewers
+#   user 5 = author of both papers         papers 1 and 2 = seeded submissions
+#
+# Run the requests top to bottom (IntelliJ HTTP client / VS Code REST Client).
+# Every request authenticates by passing requesterID as a query parameter.
+
+### 0. The track starts in the BIDDING phase (submission deadline already passed)
+GET http://localhost:8080/conferences/1/tracks/1/phase?requesterID=1
+
+### 1. The chair lists the papers submitted to the track
+GET http://localhost:8080/conferences/1/tracks/1/papers?requesterID=1
+
+### 2. A reviewer reads a paper's title and abstract before bidding
+GET http://localhost:8080/papers/1/title-and-abstract?requesterID=2
+
+### 3. Reviewers bid on paper 1 (CAN_REVIEW / NEUTRAL / NOT_REVIEW)
+PUT http://localhost:8080/papers/1/bids?requesterID=2
+Content-Type: application/json
+
+"CAN_REVIEW"
+
+### 4.
+PUT http://localhost:8080/papers/1/bids?requesterID=3
+Content-Type: application/json
+
+"CAN_REVIEW"
+
+### 5.
+PUT http://localhost:8080/papers/1/bids?requesterID=4
+Content-Type: application/json
+
+"NEUTRAL"
+
+### 6. ... and on paper 2
+PUT http://localhost:8080/papers/2/bids?requesterID=2
+Content-Type: application/json
+
+"CAN_REVIEW"
+
+### 7.
+PUT http://localhost:8080/papers/2/bids?requesterID=3
+Content-Type: application/json
+
+"NEUTRAL"
+
+### 8.
+PUT http://localhost:8080/papers/2/bids?requesterID=4
+Content-Type: application/json
+
+"CAN_REVIEW"
+
+### 9. The chair inspects all bids on paper 1
+GET http://localhost:8080/papers/1/bids?requesterID=1
+
+### 10. The chair closes bidding by moving the deadline into the past
+###     (body is a Unix timestamp in milliseconds) -> track enters ASSIGNING
+PUT http://localhost:8080/conferences/1/tracks/1/bidding-deadline?requesterID=1
+Content-Type: application/json
+
+1700000000000
+
+### 11. Confirm the phase change
+GET http://localhost:8080/conferences/1/tracks/1/phase?requesterID=1
+
+### 12. The chair triggers automatic assignment: every paper gets the three
+###     bidding reviewers with the smallest workload
+PUT http://localhost:8080/conferences/1/tracks/1/automatic?requesterID=1
+
+### 13. Who reviews paper 1?
+GET http://localhost:8080/papers/1/assignees?requesterID=1
+
+### 14. The chair finalises the assignments (requires >= 3 reviewers per
+###     paper) -> track enters REVIEWING
+POST http://localhost:8080/conferences/1/tracks/1/finalization?requesterID=1
+
+### 15. Confirm the phase change
+GET http://localhost:8080/conferences/1/tracks/1/phase?requesterID=1
+
+### 16. A reviewer lists the papers assigned to them
+GET http://localhost:8080/papers/by-reviewer?requesterID=2
+
+### 17. Reviewer 2 submits a review for paper 1
+PUT http://localhost:8080/papers/1/reviews?requesterID=2
+Content-Type: application/json
+
+{
+  "confidenceScore": "EXPERT",
+  "commentForAuthor": "Strong contribution, clear experiments.",
+  "confidentialComment": "I checked the proofs, they hold.",
+  "recommendationScore": "STRONG_ACCEPT"
+}
+
+### 18. Reviewer 3 submits a review for paper 1
+PUT http://localhost:8080/papers/1/reviews?requesterID=3
+Content-Type: application/json
+
+{
+  "confidenceScore": "KNOWLEDGEABLE",
+  "commentForAuthor": "Good paper, minor presentation issues.",
+  "confidentialComment": "Section 4 could be tighter but the results convince me.",
+  "recommendationScore": "WEAK_ACCEPT"
+}
+
+### 19. Reviewer 4 submits the last review for paper 1 -> the paper
+###     automatically enters the IN_DISCUSSION phase
+PUT http://localhost:8080/papers/1/reviews?requesterID=4
+Content-Type: application/json
+
+{
+  "confidenceScore": "BASIC",
+  "commentForAuthor": "Convincing results on all six language pairs.",
+  "confidentialComment": "Outside my core area, deferring on theory.",
+  "recommendationScore": "WEAK_ACCEPT"
+}
+
+### 20. Confirm the paper phase (asked by an assigned reviewer)
+GET http://localhost:8080/papers/1/reviews/phase?requesterID=2
+
+### 21. During discussion, reviewer 3 comments on reviewer 2's review
+POST http://localhost:8080/papers/1/reviews/by-reviewer/2/discussion-comments?requesterID=3
+Content-Type: application/json
+
+"I agree with the strong accept, the error-correction idea is novel."
+
+### 22. The chair reads the discussion
+GET http://localhost:8080/papers/1/reviews/by-reviewer/2/discussion-comments?requesterID=1
+
+### 23. The reviews agree (all accept), so the chair finalises paper 1
+###     -> status ACCEPTED, paper phase REVIEWED
+POST http://localhost:8080/papers/1/reviews/finalization?requesterID=1
+
+### 24. Reviewers reject paper 2
+PUT http://localhost:8080/papers/2/reviews?requesterID=2
+Content-Type: application/json
+
+{
+  "confidenceScore": "EXPERT",
+  "commentForAuthor": "The comparison baselines are outdated.",
+  "confidentialComment": "Misses all post-2020 work.",
+  "recommendationScore": "STRONG_REJECT"
+}
+
+### 25.
+PUT http://localhost:8080/papers/2/reviews?requesterID=3
+Content-Type: application/json
+
+{
+  "confidenceScore": "KNOWLEDGEABLE",
+  "commentForAuthor": "Results do not support the claims.",
+  "confidentialComment": "Variance bars overlap everywhere.",
+  "recommendationScore": "WEAK_REJECT"
+}
+
+### 26.
+PUT http://localhost:8080/papers/2/reviews?requesterID=4
+Content-Type: application/json
+
+{
+  "confidenceScore": "KNOWLEDGEABLE",
+  "commentForAuthor": "Interesting idea but the evaluation is too narrow.",
+  "confidentialComment": "Only two benchmarks tested.",
+  "recommendationScore": "WEAK_REJECT"
+}
+
+### 27. The chair finalises paper 2 -> REJECTED. All papers are now decided,
+###     so the track reaches the FINAL phase
+POST http://localhost:8080/papers/2/reviews/finalization?requesterID=1
+
+### 28. Confirm: the track is FINAL
+GET http://localhost:8080/conferences/1/tracks/1/phase?requesterID=1
+
+### 29. The author checks the verdicts
+GET http://localhost:8080/papers/1/status?requesterID=5
+
+### 30.
+GET http://localhost:8080/papers/2/status?requesterID=5
+
+### 31. The author reads a review of their accepted paper; note that the
+###     confidential reviewer comment is hidden from authors
+GET http://localhost:8080/papers/1/reviews/by-reviewer/2?requesterID=5
+
+### 32. The chair pulls the track analytics
+GET http://localhost:8080/conferences/1/tracks/1/analytics?requesterID=1

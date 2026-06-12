@@ -1,6 +1,6 @@
 package nl.tudelft.sem.v20232024.team08b.util;
 
-import javassist.NotFoundException;
+import nl.tudelft.sem.v20232024.team08b.exceptions.NotFoundException;
 import nl.tudelft.sem.v20232024.team08b.utils.HttpRequestSender;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

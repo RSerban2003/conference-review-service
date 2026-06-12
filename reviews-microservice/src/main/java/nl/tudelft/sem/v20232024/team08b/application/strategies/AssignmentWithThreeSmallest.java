@@ -4,7 +4,7 @@ import static java.lang.Math.min;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javassist.NotFoundException;
+import nl.tudelft.sem.v20232024.team08b.exceptions.NotFoundException;
 import nl.tudelft.sem.v20232024.team08b.communicators.CommunicationWithSubmissionMicroservice;
 import nl.tudelft.sem.v20232024.team08b.domain.Bid;
 import nl.tudelft.sem.v20232024.team08b.domain.Paper;

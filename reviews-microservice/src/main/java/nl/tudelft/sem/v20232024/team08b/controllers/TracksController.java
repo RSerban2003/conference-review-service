@@ -1,6 +1,6 @@
 package nl.tudelft.sem.v20232024.team08b.controllers;
 
-import javassist.NotFoundException;
+import nl.tudelft.sem.v20232024.team08b.exceptions.NotFoundException;
 import nl.tudelft.sem.v20232024.team08b.api.TracksAPI;
 import nl.tudelft.sem.v20232024.team08b.application.TrackAnalyticsService;
 import nl.tudelft.sem.v20232024.team08b.application.TrackDeadlineService;

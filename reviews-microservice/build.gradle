@@ -1,8 +1,6 @@
 buildscript {
 	repositories {
 		mavenCentral()
-		//Needed only for SNAPSHOT versions
-		//maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
 	}
 	dependencies {
 		classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.5.2'
@@ -14,8 +12,8 @@ plugins {
 	id 'java'
 
 	// Spring
-	id 'org.springframework.boot' version '2.3.5.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'org.springframework.boot' version '2.7.18'
+	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 
 	// Test coverage
 	id 'jacoco'
@@ -32,47 +30,40 @@ plugins {
 
 group = 'nl.tudelft.cse.sem.v20232024.team08b'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 15
-targetCompatibility = 15
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+// Only the executable boot jar is needed
+jar {
+	enabled = false
+}
 
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-
-	testImplementation 'junit:junit:4.13.1'
-	compileOnly 'org.projectlombok:lombok:1.18.24'
-	annotationProcessor 'org.projectlombok:lombok:1.18.24'
-
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
 
 	implementation 'org.springframework.boot:spring-boot-starter'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
-	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-//	testImplementation "org.wiremock:wiremock:3.3.1"
-//	testImplementation 'com.maciejwalkowiak.spring:wiremock-spring-boot:2.0.0'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-
-
-	// SpringDoc OpenAPI Generation
+	// Swagger UI and OpenAPI document generation from controller annotations
 	implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
 
-	// Local test database (in-memory)
+	// Embedded database
 	implementation 'com.h2database:h2'
-	developmentOnly 'org.hibernate:hibernate-entitymanager'
 
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
-	testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
-	testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.12.4'
-	testImplementation('org.assertj:assertj-core:3.23.1')
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter'
+	testImplementation 'org.mockito:mockito-core'
+	testImplementation 'org.assertj:assertj-core'
 }
 
 test {
@@ -83,20 +74,21 @@ test {
 	}
 }
 
-repositories {
-	mavenCentral()
-}
-
 jacoco {
-	toolVersion = "0.8.7" // Use the desired version of JaCoCo
+	toolVersion = "0.8.12"
 }
 jacocoTestReport {
+	reports {
+		xml.required = true
+		html.required = true
+	}
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, exclude: ['**/submissions/**',
 										'**/users/**',
 										'**/ignore/**',
-										'**/config/**'])
+										'**/config/**',
+										'**/demo/**'])
 		}))
 	}
 }
@@ -143,6 +135,7 @@ pitest {
 
 	targetClasses = ['nl.tudelft.sem.v20232024.team08b.*']  //by default "${project.group}.*"
 	excludedClasses = ['nl.tudelft.sem.v20232024.team08b.config.*',
+					   'nl.tudelft.sem.v20232024.team08b.demo.*',
 					   'nl.tudelft.sem.v20232024.team08b.dtos.*']	// exclude dtos from testing
 	pitestVersion = '1.15.2'
 	threads = 4
@@ -158,12 +151,9 @@ task generateSubmissions(type: org.openapitools.generator.gradle.plugin.tasks.Ge
 	modelPackage.set("nl.tudelft.sem.v20232024.team08b.dtos.submissions")
 	apiPackage.set("ignore")
 	configOptions.set([
-			dateLibrary: "java15"
-	])
-	configOptions = [
 			interfaceOnly: 'true',
 			openApiNullable: 'false'
-	]
+	])
 }
 task generateUsers(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
 	generatorName.set("spring")
@@ -172,12 +162,9 @@ task generateUsers(type: org.openapitools.generator.gradle.plugin.tasks.Generate
 	modelPackage.set("nl.tudelft.sem.v20232024.team08b.dtos.users")
 	apiPackage.set("ignore")
 	configOptions.set([
-			dateLibrary: "java15"
-	])
-	configOptions = [
 			interfaceOnly: 'true',
 			openApiNullable: 'false'
-	]
+	])
 }
 
 compileJava.dependsOn tasks.named("generateSubmissions")

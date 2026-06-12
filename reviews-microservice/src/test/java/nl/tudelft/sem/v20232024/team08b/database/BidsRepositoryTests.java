@@ -2,17 +2,14 @@ package nl.tudelft.sem.v20232024.team08b.database;
 
 import nl.tudelft.sem.v20232024.team08b.domain.Bid;
 import nl.tudelft.sem.v20232024.team08b.repos.BidRepository;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
 @DataJpaTest
-@RunWith(SpringRunner.class)
 public class BidsRepositoryTests {
     @Autowired
     private BidRepository bidRepository;
